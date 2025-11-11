@@ -1,3 +1,4 @@
+import { CheckFatIcon } from "@phosphor-icons/react/dist/ssr";
 import React from "react";
 
 interface Node {
@@ -6,6 +7,11 @@ interface Node {
   format?: string;
   children?: Node[];
   text?: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  code?: boolean;
+  strikethrough?: boolean;
 }
 
 export default function RichTextRenderer({ content }: { content: Node[] }) {
@@ -14,19 +20,24 @@ export default function RichTextRenderer({ content }: { content: Node[] }) {
   const renderNode = (node: Node, index: number): React.ReactNode => {
     switch (node.type) {
       case "heading": {
-        const level = Math.min(Math.max(node.level || 2, 1), 6) as 1 | 2 | 3 | 4 | 5 | 6;
+        const level = Math.min(Math.max(node.level || 2, 1), 6) as
+          | 1
+          | 2
+          | 3
+          | 4
+          | 5
+          | 6;
         const Tag = `h${level}` as const;
-        
         return React.createElement(
           Tag,
-          { key: index, className: "mt-8 mb-4 text-2xl font-bold" },
-          node.children?.map(renderNode)
+          { key: index, className: "mt-6 mb-2 text-xl font-semibold" },
+          node.children?.map(renderNode),
         );
       }
 
       case "paragraph":
         return (
-          <p key={index} className="mb-4 leading-relaxed">
+          <p key={index} className="mb-2 leading-relaxed">
             {node.children?.map(renderNode)}
           </p>
         );
@@ -35,20 +46,58 @@ export default function RichTextRenderer({ content }: { content: Node[] }) {
         const ListTag = node.format === "ordered" ? "ol" : "ul";
         return React.createElement(
           ListTag,
-          { key: index, className: "mb-4 list-disc space-y-1 pl-6 rtl:text-right" },
-          node.children?.map(renderNode)
+          { key: index, className: "mb-4 list-disc space-y-1 pr-6" },
+          node.children?.map(renderNode),
         );
       }
 
       case "list-item":
         return (
-          <li key={index} className="leading-relaxed">
-            {node.children?.map(renderNode)}
+          <li key={index} className="flex items-start gap-2 leading-relaxed">
+            <CheckFatIcon
+              size={16}
+              weight="duotone"
+              className="mt-1 shrink-0 text-emerald-600"
+            />
+            <span>{node.children?.map(renderNode)}</span>
           </li>
         );
 
-      case "text":
-        return node.text;
+      case "text": {
+        let textElement: React.ReactNode = node.text;
+        if (!textElement) return null;
+
+        if (node.bold)
+          textElement = (
+            <strong key={index} className="font-medium">
+              {textElement}
+            </strong>
+          );
+        if (node.italic) textElement = <em key={index}>{textElement}</em>;
+        if (node.underline)
+          textElement = (
+            <u key={index} className="underline-offset-4">
+              {textElement}
+            </u>
+          );
+        if (node.strikethrough)
+          textElement = (
+            <s key={index} className="text-gray-400">
+              {textElement}
+            </s>
+          );
+        if (node.code)
+          textElement = (
+            <code
+              key={index}
+              className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm"
+            >
+              {textElement}
+            </code>
+          );
+
+        return textElement;
+      }
 
       default:
         return null;

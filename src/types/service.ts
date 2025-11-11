@@ -9,14 +9,15 @@ export interface ServiceResponse {
 
 export interface Service {
   address: string;
-  artists: Artist[];
   additional_note: string;
+  artists: Artist[];
+  capacity: number;
   category: Category;
   createdAt: string;
   days: string;
   description: [];
   documentId: string;
-  fee: number;
+  price: number;
   id: number;
   image: {
     url: string;

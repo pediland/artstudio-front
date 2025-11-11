@@ -1,16 +1,20 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-import { Container } from "./Container";
 import { SelectLanguage } from "../global/SelectLanguage";
+import { Container } from "./Container";
 
+interface HeaderProps {
+  className?: string;
+}
 
-export const Header = () => {
+export const Header = ({ className }: HeaderProps) => {
   const t = useTranslations("Menu");
 
   return (
-    <header className="pt-5">
+    <header className={cn(className)}>
       <Container className="py-0">
         <div className="flex h-14 items-center justify-center">
           <Link href={`/`}>

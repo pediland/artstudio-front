@@ -7,6 +7,6 @@ export interface Artist {
   publishedAt: string;
   resume: [];
   slug: string;
-  title: string;
+  full_name: string;
   updatedAt: string;
 }
