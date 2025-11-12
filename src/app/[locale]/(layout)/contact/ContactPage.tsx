@@ -4,7 +4,6 @@ import { usePageHeadStore } from "@/store/usePageHeadStore";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
-import { Container } from "@/components";
 
 export default function ContactPage() {
   const t = useTranslations("Contact");
